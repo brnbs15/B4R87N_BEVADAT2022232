@@ -130,6 +130,7 @@ def split_into_chunks(input_list,chunk_size) ->list:
             if j < len(input_list):
                 chunk.append(input_list[j])
         result.append(chunk)
+     return result
 
 
 #Create a function that can merge n dictionaries
