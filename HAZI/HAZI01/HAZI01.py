@@ -6,10 +6,10 @@
 
 def subset(input_list,start_index,end_index)-> list:
     result=[]
-    for  i in range(start_index,end_index):
+    for  i in range(start_index-1,end_index):
         result.append(input_list[i])
     return result
-subset([1,4,2,56,7],2,4)
+subset([1,4,2,56,7],1,5)
 
 #Create a function that returns every nth element of a list.
 #return type: list
@@ -18,8 +18,8 @@ subset([1,4,2,56,7],2,4)
 
 def every_nth(input_list,step_size)-> list:
     nth=[]
-    for i in range(step_size,len(input_list),2):
-            nth.append(input_list[i])
+    for i in range(step_size,len(input_list),step_size):
+            nth.append(input_list[i-1])
     return nth
 every_nth([1,4,2,56,7],2)
 
@@ -73,8 +73,12 @@ merge_lists([1,2,34,5],[8,3,1,7,3],[2,45,6])
 def reverse_tuples(input_list) -> list:
     reversed=[]
     for item in input_list:
+        tupl=()
+        helplist=[]
         for  i in range(len(item)-1,-1,-1) :
-            reversed.append(item[i])
+            helplist.append(item[i])
+        tupl=(tupl + tuple(helplist))
+        reversed.append(tupl)
     return reversed
 reverse_tuples([(1,2,34,5),(8,3,1,7,3),(2,45,6)])
 
@@ -96,7 +100,7 @@ def remove_duplicates(input_list)-> list:
                     j=j+1
         i=i+1
     return input_list
-remove_duplicates([1,9,2,9,7])
+remove_duplicates([1,9,2,9,7,7,7])
 
 #Create a function that transposes a nested list (matrix)
 #return type: list
@@ -105,13 +109,13 @@ remove_duplicates([1,9,2,9,7])
 
 def transpose(input_list) ->list:
      result=[]
-     for i in range(0,len(input_list)):
+     for i in range(0,len(input_list[0])):
           row=[]
-          for j in range(0,len(input_list[i])):
+          for j in range(0,len(input_list)):
                row.append(input_list[j][i])
           result.append(row)
      return result
-transpose([[1,2,3],[3,6,1],[8,4,5]])
+transpose([[1,2,3,4],[3,6,1,4],[8,4,5,4]])
 
 #Create a function that can split a nested list into chunks
 #chunk size is given by parameter

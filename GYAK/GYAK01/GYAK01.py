@@ -32,9 +32,9 @@ def is_odd(input_list : list) -> list:
     masked_list = []
     for item in input_list:
         if item % 2 == 0:
-            masked_list.append(True)
-        else:
             masked_list.append(False)
+        else:
+            masked_list.append(True)
     return masked_list
 
 
