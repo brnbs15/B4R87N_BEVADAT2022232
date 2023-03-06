@@ -5,11 +5,8 @@
 #input parameters: input_list,start_index,end_index
 
 def subset(input_list,start_index,end_index)-> list:
-    result=[]
-    for  i in range(start_index-1,end_index):
-        result.append(input_list[i])
+    result=input_list[start_index:end_index]
     return result
-
 
 #Create a function that returns every nth element of a list.
 #return type: list
@@ -17,9 +14,7 @@ def subset(input_list,start_index,end_index)-> list:
 #input parameters: input_list,step_size
 
 def every_nth(input_list,step_size)-> list:
-    nth=[]
-    for i in range(step_size,len(input_list),step_size):
-            nth.append(input_list[i-1])
+    nth=input_list[::step_size]
     return nth
 
 
