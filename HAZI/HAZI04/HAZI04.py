@@ -116,26 +116,3 @@ def ethnicity_pie_chart(df : dict):
     ax.pie(df_groupped,labels = df_groupped.index,autopct='%1.1f%%')
     return fig
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
