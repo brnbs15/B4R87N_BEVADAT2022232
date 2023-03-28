@@ -115,4 +115,3 @@ def ethnicity_pie_chart(df : dict):
     ax.set_title('Proportion of Students by Race/Ethnicity')
     ax.pie(df_groupped,labels = df_groupped.index,autopct='%1.1f%%')
     return fig
-
