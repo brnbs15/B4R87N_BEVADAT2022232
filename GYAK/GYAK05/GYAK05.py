@@ -9,8 +9,9 @@ class KNNClassifier:
 
     csv_path = 'C:/Tanulas/MI_specializáció/bevadat/B4R87N_BEVADAT2022232/GYAK/GYAK05/iris.csv'
     
-    property 
-    k_neighbors = 0  
+    @property
+    def k_neighbors(self):
+        return self.k
 
     def __init__(self,k:int,test_split_ratio:float):
         self.k=k
@@ -49,16 +50,13 @@ class KNNClassifier:
             distances = np.array(sorted(zip(distances,self.y_train)))
             label_pred = mode(distances[:self.k,1],keepdims=False).mode
             labels_pred.append(label_pred)
-
-            return np.array(labels_pred,dtype=np.int32)
+            self.y_preds=np.array(labels_pred,dtype=np.int32)
         
     def accuracy(self) -> float:
         true_positive = (self.y_test == self.y_preds).sum()
         return true_positive / len(self.y_test) * 100
     
-    def plot_confusion_matrix(self):
+    def confusion_matrix(self):
         conf_matrix = confusion_matrix(self.y_test,self.y_preds)
-        sns.heatmap(conf_matrix,annot=True) 
-    
-
+        return conf_matrix
 
