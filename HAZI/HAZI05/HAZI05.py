@@ -23,39 +23,56 @@ class KNNClassifier:
         self.y_test=0
 
     @staticmethod
-    def load_csv(csv_path:str) ->Tuple[pd.Series,pd.Series]:
-        pd.random.seed(42)
-        dataset = pd.genfromtxt(csv_path,delimiter=',')
-        pd.random.shuffle(dataset,)
-        x,y = dataset[:,:4],dataset[:,-1]
+    def load_csv(csv_path:str) -> Tuple[pd.DataFrame,pd.DataFrame]:
+        df = pd.read_csv(csv_path)
+        df = df.sample(random_state=42,frac=1)  
+        x = df.iloc[:,:-1]
+        y = df.iloc[:,-1]
         return x,y
     
-    def train_test_split(self,features:pd.Series,labels:pd.Series) -> None:
+    def train_test_split(self,features:pd.DataFrame,labels:pd.DataFrame) -> None:
         
         test_size = int(len(features) * self.test_split_ratio)
         train_size = len(features) - test_size
         assert len(features) == test_size + train_size, "Size mismatch!"
 
-        self.x_train,self.y_train = features[:train_size,:],labels[:train_size]
-        self.x_test,self.y_test = features[train_size:train_size+test_size,:], labels[train_size:train_size + test_size]
+        x_train,y_train = features.iloc[:train_size,:],labels.iloc[:train_size]
+        x_test,y_test = features.iloc[train_size:,:],labels.iloc[train_size:]
+        self.x_train, self.y_train, self.x_test, self.y_test = x_train, y_train, x_test, y_test
     
-    def euclidean(self,element_of_x:pd.Series) -> pd.Series:
-        return pd.sqrt(pd.sum((self.x_train - element_of_x)**2,axis=1))
+    def euclidean(self,element_of_x:pd.DataFrame):
+        return ((self.x_train - element_of_x)**2).sum(axis=1)**0.5
     
-
-    def predict(self,x_test:pd.Series) -> pd.Series:
+    def predict(self,x_test:pd.DataFrame):
         labels_pred = []
-        for x_test_element in x_test:
-            distances = self.euclidean(self.x_train,x_test_element)
-            distances = pd.array(sorted(zip(distances,self.y_train)))
-            label_pred = mode(distances[:self.k,1],keepdims=False).mode
-            labels_pred.append(label_pred)
-            self.y_preds=pd.array(labels_pred,dtype=pd.int32)
-        
-    def accuracy(self) -> float:
-        true_positive = (self.y_test == self.y_preds).sum()
+        for x_test_row in x_test.iterrows():
+              distances = self.euclidean(x_test_row)
+              distances = pd.DataFrame(sorted(zip(distances,self.y_train)))
+
+              label_pred = mode(distances.iloc[:self.k,1],keepdims=False)
+              labels_pred.append(label_pred)
+
+        self.y_preds = pd.DataFrame(labels_pred).iloc[:,0]
+
+    def accuracy(self)->float:
+        true_positive = (self.y_test.reset_index(drop=True) == self.y_preds.reset_index(drop=True)).sum()
         return true_positive / len(self.y_test) * 100
     
     def confusion_matrix(self):
         conf_matrix = confusion_matrix(self.y_test,self.y_preds)
         return conf_matrix
+    
+    def best_k(self) -> Tuple[int, float]:
+        best_k = 0
+        best_accuracy = 0.0
+        OG_K = self.k
+        for i in range(20):
+            self.k = i+1
+            self.predict(self.x_test)
+            current_accuracy = self.accuracy()
+            if (best_accuracy < current_accuracy):
+                best_k = i+1
+                best_accuracy = current_accuracy
+        self.k = OG_K
+        return best_k, round(best_accuracy, 2)
+    
