@@ -7,7 +7,6 @@ from  sklearn.metrics import confusion_matrix, euclidean_distances
 
 class KNNClassifier:
 
-    csv_path = 'C:/Tanulas/MI_specializáció/bevadat/B4R87N_BEVADAT2022232/GYAK/GYAK05/iris.csv'
     
     @property
     def k_neighbors(self):
@@ -16,11 +15,7 @@ class KNNClassifier:
     def __init__(self,k:int,test_split_ratio:float):
         self.k=k
         self.test_split_ratio=test_split_ratio
-        k_neighbors=k
-        self.x_train=0
-        self.y_train=0
-        self.y_preds=0
-        self.y_test=0
+
 
     @staticmethod
     def load_csv(csv_path:str) -> Tuple[pd.DataFrame,pd.DataFrame]:
@@ -61,18 +56,4 @@ class KNNClassifier:
     def confusion_matrix(self):
         conf_matrix = confusion_matrix(self.y_test,self.y_preds)
         return conf_matrix
-    
-    def best_k(self) -> Tuple[int, float]:
-        best_k = 0
-        best_accuracy = 0.0
-        OG_K = self.k
-        for i in range(20):
-            self.k = i+1
-            self.predict(self.x_test)
-            current_accuracy = self.accuracy()
-            if (best_accuracy < current_accuracy):
-                best_k = i+1
-                best_accuracy = current_accuracy
-        self.k = OG_K
-        return best_k, round(best_accuracy, 2)
     
