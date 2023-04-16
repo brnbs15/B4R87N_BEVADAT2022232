@@ -51,4 +51,50 @@ HAZI-
 ##                                                              ##
 ##################################################################
 """
+from sklearn.model_selection import train_test_split
+from NJCleaner import NJCleaner
+from DecisionTreeClassifier  import DecisionTreeClassifier
+import pandas as pd
+from sklearn.metrics import accuracy_score
 
+
+nj = NJCleaner('./2018_03.csv')
+nj.prep_df()
+
+
+col_name = ['stop_sequence' , 'from_id' , 'to_id' , 'status' , 'line' , 'type' , 'day', 'part_of_the_day' , 'delay']
+data = pd.read_csv('./NJ.csv',skiprows=1, header=None, names=col_name)
+
+
+x = data.iloc[:,:-1].values
+y = data.iloc[:,-1].values.reshape(-1,1)
+X_train, X_test, Y_train, Y_test = train_test_split(x,y,test_size=.2, random_state=41)
+
+
+classifier = DecisionTreeClassifier(min_samples_split=3, max_depth=4)
+classifier.fit(X_train, Y_train)
+
+Y_pred = classifier.predict(X_test)
+print(accuracy_score(Y_test, Y_pred))
+
+#1  min_samples_split=2, max_depth=4 -> 0.7955
+#2  min_samples_split=2, max_depth=3 -> 0.7941666666666667
+#3  min_samples_split=2, max_depth=2 -> 0.7915833333333333
+#4  min_samples_split=2, max_depth=1 -> 0.7889166666666667
+#5  min_samples_split=1, max_depth=4 -> 0.7955
+#6  min_samples_split=1, max_depth=3 -> 0.7941666666666667
+#7  min_samples_split=1, max_depth=2 -> 0.7915833333333333
+#8  min_samples_split=3, max_depth=4 -> 0.7955
+#9  min_samples_split=3, max_depth=3 -> 0.7941666666666667
+#10 min_samples_split=3, max_depth=2 -> 0.7915833333333333
+
+# Elég nehezen sikerült megoldani a feladatot, az eddigi heti feladatok is
+# nehezen mentek és ez a feladat is csak azért sikerült amilyenre sikerült,
+# mert segítéget kaptam egy felsőbb éves hallgató társamtól és  mert több idő volt rá.
+# Nehezen tartom az anyaggal a lépést, de probálom megérteni.
+
+# Már a NJCleaner oszály megírása is tartogatott számomra nehézségeket.
+# Sok már létező metódus használata és megtalálása, hogy egyszerűbb legyen a megoldás számomra mindig nagy probléma.
+# Mivel az előző heti feladatok is nehezen mentek, így már az arra a tudásra épülő feladat 
+# nekem elég nehezen megy és ezért már a egyszerűbb kisebb feladatokkal is megy az idő.
+# Fájlkezeléssel is volt bajom, elérési utak stb. 
