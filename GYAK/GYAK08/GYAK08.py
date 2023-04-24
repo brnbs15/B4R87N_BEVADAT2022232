@@ -4,24 +4,31 @@ import numpy as np
 class LinearRegression:
 
     def __init__(self, epochs: int = 1000, lr: float = 1e-3):
+        self.m = 0
+        self.c = 0
         self.epochs = epochs
         self.lr = lr
+        self.casualties = []
 
-    def fit(self, X: np.array, y: np.array):
-        samples = X.shape[0]
-        features = X.shape[1]
+    def fit(self, X: np.array, Y: np.array):
+        n = float(len(X)) 
+        
+        for i in range(self.epochs): 
+            Y_pred = self.m * X + self.c
 
-        self.weights = np.zeros(features + 1)
-
-        X = np.insert(X, 0, 1, axis=1)
-
-        for _ in range(self.epochs):
-            y_pred = np.dot(X, self.weights)
-            error = y - y_pred
-            gradient = -2 * np.dot(X.T, error) / samples
-            self.weights -= self.lr * gradient
+            leftovers = Y - Y_pred
+            loss = np.sum(leftovers ** 2)
+            self.casualties.append(loss)
+            m_derivative= (-2/n) * sum(X * leftovers)
+            c_derivative = (-2/n) * sum(leftovers)
+            self.m = self.m - self.lr * m_derivative 
+            self.c = self.c - self.lr * c_derivative
+        return self.casualties
         
     def predict(self, X):
-        X = np.insert(X, 0, 1, axis=1)
-        y_pred = np.dot(X, self.weights)
-        return y_pred
+        return self.m * X + self.c
+    
+    def evaluate(self, X, Y):
+        prediction = self.predict(X)
+        return np.mean((prediction - Y)**2)
+    
